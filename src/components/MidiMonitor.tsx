@@ -161,7 +161,7 @@ export default function MidiMonitor({
             </div>
           ) : (
             <div className="flex flex-col gap-1.5">
-              {eventLogs.slice(0, 40).map((log) => {
+              {eventLogs.slice(0, 40).map((log, idx) => {
                 const isSystem = log.type.startsWith("system_");
                 let colorClass = "text-zinc-400";
                 
@@ -174,7 +174,7 @@ export default function MidiMonitor({
                 }
 
                 return (
-                  <div key={log.id} className="border-b border-zinc-900/50 pb-1.5 flex flex-col gap-0.5">
+                  <div key={log.id || `log-key-${idx}-${log.timestamp}`} className="border-b border-zinc-900/50 pb-1.5 flex flex-col gap-0.5">
                     <div className="flex items-center gap-2 justify-between">
                       <div className="flex items-center gap-1.5">
                         <span className="text-zinc-500 font-mono text-[9px]">

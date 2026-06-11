@@ -144,8 +144,13 @@ export default function App() {
         try {
           const parsed = JSON.parse(event.data);
           if (parsed.type?.startsWith("system_")) {
+            const enriched = {
+              id: parsed.id || "sys-" + Math.random().toString(36).substring(2, 9) + "-" + Date.now(),
+              timestamp: parsed.timestamp || new Date().toISOString(),
+              ...parsed,
+            };
             // Log server-side handshakes inside monitor
-            setEventLogs((prev) => [parsed, ...prev].slice(0, 200));
+            setEventLogs((prev) => [enriched, ...prev].slice(0, 200));
           }
         } catch (e) {
           // Normal log telemetry
