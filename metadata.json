@@ -1,0 +1,8 @@
+{
+  "name": "iPad Web DJ MIDI Controller",
+  "description": "A professional touch-first iPad web DJ controller with Deck A & B, touch jog-wheels, EQ, FX, crossfader, and low-latency JSON WebSocket stream ready to connect to virtual MIDI ports.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
