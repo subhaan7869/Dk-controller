@@ -119,6 +119,47 @@ export default function App() {
     return () => clearInterval(interval);
   }, []);
 
+  // Playback playhead progression loop
+  useEffect(() => {
+    let animationFrameId: number;
+    let lastTime = Date.now();
+
+    const updatePlayheads = () => {
+      const now = Date.now();
+      const dt = (now - lastTime) / 1000; // delta time in seconds
+      lastTime = now;
+
+      setDeckA((prev) => {
+        if (!prev.playing) return prev;
+        const speedMultiplier = 1 + (prev.pitch / 100);
+        // Track duration is 206 seconds. 206 seconds / 100 = 2.06 seconds per percent
+        const secondsPerPercent = 2.06;
+        let nextPos = prev.wavePosition + (dt / secondsPerPercent) * speedMultiplier;
+        if (nextPos >= 100) {
+          nextPos = prev.loopActive ? (nextPos % 100) : 100;
+        }
+        return { ...prev, wavePosition: Number(nextPos.toFixed(3)) };
+      });
+
+      setDeckB((prev) => {
+        if (!prev.playing) return prev;
+        const speedMultiplier = 1 + (prev.pitch / 100);
+        // Track duration is 320 seconds. 320 seconds / 100 = 3.20 seconds per percent
+        const secondsPerPercent = 3.20;
+        let nextPos = prev.wavePosition + (dt / secondsPerPercent) * speedMultiplier;
+        if (nextPos >= 100) {
+          nextPos = prev.loopActive ? (nextPos % 100) : 100;
+        }
+        return { ...prev, wavePosition: Number(nextPos.toFixed(3)) };
+      });
+
+      animationFrameId = requestAnimationFrame(updatePlayheads);
+    };
+
+    animationFrameId = requestAnimationFrame(updatePlayheads);
+    return () => cancelAnimationFrame(animationFrameId);
+  }, []);
+
   // Re-establish socket connections
   useEffect(() => {
     let active = true;
@@ -563,7 +604,7 @@ export default function App() {
       {/* =======================================================
           MAIN HARDWARE CONTROLLER PANEL (3-Channel Flex Grid)
           ======================================================= */}
-      <main className="flex-1 min-h-0 flex flex-col xl:flex-row gap-3">
+      <main className="flex-1 min-h-0 flex flex-row overflow-x-auto gap-3 items-stretch justify-start lg:justify-center py-1">
         {/* --- DECK A (Blue section) --- */}
         {(activeTab === "ALL" || activeTab === "DECK_A") && (
           <Deck
